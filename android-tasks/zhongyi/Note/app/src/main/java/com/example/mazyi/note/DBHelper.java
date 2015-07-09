@@ -17,6 +17,7 @@ public class DBHelper extends SQLiteOpenHelper{
     private final static String TABLE_NAME = "note";
     public final static String NOTE_ID = "_id";
     public final static String NOTE_TIME = "time";
+    public final static String NOTE_DATE = "date";
     public final static String NOTE_CONTENT = "content";
 
     /*构造函数*/
@@ -30,6 +31,7 @@ public class DBHelper extends SQLiteOpenHelper{
         String sql = "create table "+TABLE_NAME+" ("
                 +NOTE_ID+" integer primary key autoincrement, "
                 +NOTE_TIME+" text, "
+                +NOTE_DATE+" date, "
                 +NOTE_CONTENT+" text )";
         // 直接执行 sql 语句
         db.execSQL(sql);
@@ -55,7 +57,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
     /**插入记事
      * */
-    public long insertNote(String content,String time){
+    public long insertNote(String content,String date,String time){
         // 实例化一个 SQLiteDatabase 对象
         SQLiteDatabase db = this.getWritableDatabase();
 		/*
@@ -64,6 +66,7 @@ public class DBHelper extends SQLiteOpenHelper{
 		 * */
         ContentValues cv = new ContentValues();
         cv.put(NOTE_CONTENT, content);
+        cv.put(NOTE_DATE, date);
         cv.put(NOTE_TIME, time);
         // insert()方法：插入数据，成功返回行数，否则返回-1
         long rowid = db.insert(TABLE_NAME, null, cv);
@@ -89,12 +92,13 @@ public class DBHelper extends SQLiteOpenHelper{
      * @param id
      * _id字段
      * */
-    public int updateNote(String id, String content,String time){
+    public int updateNote(String id, String content,String date,String time){
         SQLiteDatabase db = this.getWritableDatabase();
         String where = NOTE_ID+"=?";
         String[] whereValues = {id};
         ContentValues cv = new ContentValues();
         cv.put(NOTE_CONTENT, content);
+        cv.put(NOTE_DATE, date);
         cv.put(NOTE_TIME, time);
         // update()方法：根据条件更新数据库，cv保存更新后的数据，where为更新条件
         int numRow = db.update(TABLE_NAME, cv, where, whereValues);
