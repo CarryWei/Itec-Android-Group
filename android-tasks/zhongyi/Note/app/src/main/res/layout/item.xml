@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/Item_Title"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:textSize="20sp"
+        android:textColor="#E0E0E0"
+        android:background="#212121"
+        android:text="Title"
+        />
+    <TextView
+        android:id="@+id/Item_Time"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_below="@+id/Item_Title"
+        android:textColor="#E0E0E0"
+        android:background="#212121"
+        android:text="Text"
+        />
+
+</RelativeLayout>
