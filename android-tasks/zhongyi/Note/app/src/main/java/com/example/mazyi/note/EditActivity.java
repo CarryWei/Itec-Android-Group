@@ -14,93 +14,81 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-/**
- * Created by mazyi on 2015/7/8 0008.
- */
 public class EditActivity extends Activity {
 
-    private EditText Edit_Content;
-    private TextView date;
-    private Button Delete;
-
-    private String OriginContent;
-    private String OriginTime;
-    private String OriginDate;
-    private String mID;
-
+    private EditText editTextContent;
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit);
 
-        Edit_Content = (EditText) findViewById(R.id.edit_content);
+        String originContent;
+        String originTime;
+        String originDate;
 
-        date = (TextView) findViewById(R.id.date);
-
-        Delete = (Button) findViewById(R.id.delete);
-        Delete.setOnClickListener(mOnClickListener);
+        editTextContent = (EditText) findViewById(R.id.edtTxt_edit_content);
+        TextView date = (TextView) findViewById(R.id.tv_edit_date);
+        Button delete = (Button) findViewById(R.id.btn_edit_delete);
+        delete.setOnClickListener(ButtonOnClickListener);
 
         Intent intent = getIntent();
-        OriginContent = intent.getStringExtra(MainActivity.sCONTENT);
-        OriginDate = intent.getStringExtra(MainActivity.sDATE);
-        OriginTime = intent.getStringExtra(MainActivity.sTIME);
-        mID = intent.getStringExtra(MainActivity.sID);
+        originContent = intent.getStringExtra(MainActivity.MAIN_CONTENT);
+        originDate = intent.getStringExtra(MainActivity.MAIN_DATE);
+        originTime = intent.getStringExtra(MainActivity.MAIN_TIME);
+        id = intent.getStringExtra(MainActivity.MAIN_ID);
 
-        if(!TextUtils.isEmpty(OriginContent)){
-            Edit_Content.setText(OriginContent);
-            Edit_Content.setSelection(Edit_Content.length());
+        if (!TextUtils.isEmpty(originContent)){
+            editTextContent.setText(originContent);
+            editTextContent.setSelection(editTextContent.length());
         }
-        if(!TextUtils.isEmpty(OriginDate)){
-            date.setText(OriginDate + " " + OriginTime);
+        if (!TextUtils.isEmpty(originDate)){
+            date.setText(originDate + " " + originTime);
         }
 
     }
 
-    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
-
+    private View.OnClickListener ButtonOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.delete:
-                    if(!deleteNote()){
+                case R.id.btn_edit_delete:
+                    if(!deleteNote()) {
                         Toast.makeText(EditActivity.this,"Opsss", Toast.LENGTH_SHORT).show();
                     }
                     finish();
                     break;
                 default:
-                    break;
             }
         }
     };
 
-    /**
-     * 保存笔记
-     *
-     * @return
-     * 	保存是否成功
-     */
     private boolean saveNote() {
         Time t = new Time();
         boolean isSucceed = true;
-        String content = Edit_Content.getText() + "";
-        if(content.length() == 0){
+        String content = editTextContent.getText() + "";
+
+        if (content.length() == 0){
             deleteNote();
-        }
-        else{
-            DBHelper dbHelper = new DBHelper(EditActivity.this);
-            if(TextUtils.isEmpty(mID)) {		// 判断是插入，还是编辑笔记
+        } else {
+            DatabaseHelper databaseHelper = new DatabaseHelper(EditActivity.this);
+            if (TextUtils.isEmpty(id)) {
                 t.setToNow();
+
                 String date = "" + t.year + "-" + (t.month+1) + "-" + t.monthDay;
                 String time = "" + t.hour + ":" + t.minute + ":" + t.second;
-                if( dbHelper.insertNote(content,date,time) == -1) {
+
+                if (databaseHelper.insertNote(content,date,time) == -1) {
                     isSucceed = false;
                 }
-            }else{
+            } else {
                 t.setToNow();
+
                 String date = "" + t.year + "-" + (t.month+1) + "-" + t.monthDay;
                 String time = "" + t.hour + ":" + t.minute + ":" + t.second;
-                if( dbHelper.updateNote(mID, content, date,time) < 1) {
+
+                if (databaseHelper.updateNote(id, content, date,time) < 1) {
                     isSucceed = false;
                 }
             }
@@ -112,10 +100,10 @@ public class EditActivity extends Activity {
     private boolean deleteNote() {
         boolean isSucceed = true;
 
-        DBHelper dbHelper = new DBHelper(EditActivity.this);
+        DatabaseHelper databaseHelper = new DatabaseHelper(EditActivity.this);
 
-        if( ! TextUtils.isEmpty(mID) ){
-            isSucceed = dbHelper.deleteNote(mID);
+        if( ! TextUtils.isEmpty(id) ) {
+            isSucceed = databaseHelper.deleteNote(id);
         }
         return isSucceed;
     }
@@ -130,10 +118,10 @@ public class EditActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.done:
-                if( saveNote() ){
+                if (saveNote()) {
                     Toast.makeText(EditActivity.this,"Saved", Toast.LENGTH_SHORT).show();
                     finish();
-                } else {
+                } else{
                     Toast.makeText(EditActivity.this,"Opsss", Toast.LENGTH_SHORT).show();
                 }
                 return true;

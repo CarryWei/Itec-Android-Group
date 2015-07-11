@@ -4,7 +4,7 @@
     android:orientation="horizontal" android:background="#006064">
 
     <TextView
-        android:id="@+id/Item_Title"
+        android:id="@+id/tv_item_title"
         android:layout_height="55dp"
         android:layout_width="match_parent"
         android:textSize="30sp"
@@ -13,14 +13,14 @@
         android:text="Text"
         android:singleLine="true"
         android:gravity="bottom"
-        android:layout_marginBottom="3dp"
+        android:layout_marginBottom="6dp"
         android:layout_marginLeft="16dp"
         android:layout_alignLeft="@+id/Item_Time"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:id="@+id/Item_Time"
+        android:id="@+id/tv_item_time"
         android:layout_height="55dp"
         android:layout_marginBottom="3dp"
         android:layout_marginRight="10dp"

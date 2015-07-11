@@ -11,68 +11,76 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.app.ActionBar;
 
+import java.util.List;
 
 
 public class MainActivity extends Activity {
 
-    static final public String sCONTENT = "content";
-    static final public String sID = "_id";
-    static final public String sTIME = "time";
-    static final public String sDATE = "date";
+    static final public String MAIN_CONTENT = "content";
+    static final public String MAIN_ID = "_id";
+    static final public String MAIN_TIME = "time";
+    static final public String MAIN_DATE = "date";
 
-    private ListView mlist;
-    private SimpleCursorAdapter mAdapter = null;
-    private SimpleCursorAdapter eAdapter = null;
-    private Cursor mCursor = null;
-
+    private ListView list;
+    private Cursor cursor = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ActionBar actionBar = getActionBar();
-
-        mlist = (ListView) findViewById(R.id.list);
-        mlist.setOnItemClickListener(mOnItemClickListener);
+        list = (ListView) findViewById(R.id.lv_main_list);
+        list.setOnItemClickListener(ListOnItemClickListener);
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        createSimpleCursorAdapter();
+        //createSimpleCursorAdapter();
+        setNoteAdapter();
+    }
+
+    private void setNoteAdapter() {
+
+        DatabaseHelper database = new DatabaseHelper(this);
+        cursor = database.selectNotes();
+        cursor.moveToFirst();
+        List<NoteItem> noteItems;
+
+        noteItems = database.getAllNote();
+        NoteAdapter noteAdapter = new NoteAdapter(this, noteItems, R.layout.item);
+        list.setAdapter(noteAdapter);
     }
 
     public void createSimpleCursorAdapter() {
-        DBHelper db = new DBHelper(this);
-        mCursor = db.selectNotes();
-        if (mCursor.moveToFirst()) {
-            String[] from = {DBHelper.NOTE_CONTENT, DBHelper.NOTE_DATE};
-            int[] to = {R.id.Item_Title, R.id.Item_Time};
-            mAdapter = new SimpleCursorAdapter(MainActivity.this, R.layout.item, mCursor, from, to, 2);
-            mlist.setAdapter(mAdapter);
-        }
-        else {
-            mlist.setAdapter(eAdapter);
+        DatabaseHelper db = new DatabaseHelper(this);
+        cursor = db.selectNotes();
+
+        if (cursor.moveToFirst()) {
+            String[] from = {DatabaseHelper.NOTE_CONTENT, DatabaseHelper.NOTE_DATE};
+            int[] to = {R.id.tv_item_title, R.id.tv_item_time};
+            SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(MainActivity.this, R.layout.item, cursor, from, to, 2);
+            list.setAdapter(mAdapter);
+        } else {
+            list.setAdapter(null);
         }
 
     }
 
-    private AdapterView.OnItemClickListener mOnItemClickListener = new AdapterView.OnItemClickListener() {
-
+    private AdapterView.OnItemClickListener ListOnItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            if (parent.getId() == R.id.list) {
+            if (parent.getId() == R.id.lv_main_list) {
+                cursor.moveToPosition(position);
+
                 Intent intent = new Intent();
-                mCursor.moveToPosition(position);
                 intent.setClass(MainActivity.this, EditActivity.class);
-                intent.putExtra(DBHelper.NOTE_ID, mCursor.getString(mCursor.getColumnIndexOrThrow(DBHelper.NOTE_ID)));
-                intent.putExtra(DBHelper.NOTE_CONTENT, mCursor.getString(mCursor.getColumnIndexOrThrow(DBHelper.NOTE_CONTENT)));
-                intent.putExtra(DBHelper.NOTE_TIME, mCursor.getString(mCursor.getColumnIndexOrThrow(DBHelper.NOTE_TIME)));
-                intent.putExtra(DBHelper.NOTE_DATE, mCursor.getString(mCursor.getColumnIndexOrThrow(DBHelper.NOTE_DATE)));
+                intent.putExtra(DatabaseHelper.NOTE_ID, cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.NOTE_ID)));
+                intent.putExtra(DatabaseHelper.NOTE_CONTENT, cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.NOTE_CONTENT)));
+                intent.putExtra(DatabaseHelper.NOTE_TIME, cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.NOTE_TIME)));
+                intent.putExtra(DatabaseHelper.NOTE_DATE, cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.NOTE_DATE)));
                 startActivity(intent);
             }
         }
