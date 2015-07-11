@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,6 +33,7 @@ public class MainActivity extends Activity {
 
         list = (ListView) findViewById(R.id.lv_main_list);
         list.setOnItemClickListener(ListOnItemClickListener);
+        list.setOnItemLongClickListener(ListOnItemLongClickListener);
 
     }
 
@@ -83,6 +85,17 @@ public class MainActivity extends Activity {
                 intent.putExtra(DatabaseHelper.NOTE_DATE, cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.NOTE_DATE)));
                 startActivity(intent);
             }
+        }
+    };
+
+    private AdapterView.OnItemLongClickListener ListOnItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            cursor.moveToPosition(position);
+            DatabaseHelper databaseHelper = new DatabaseHelper(MainActivity.this);
+            databaseHelper.deleteNote(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.NOTE_ID)));
+            onResume();
+            return true;
         }
     };
 
