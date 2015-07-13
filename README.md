@@ -1,4 +1,6 @@
-# Itec-Android-Group
+ELWG安卓学习小组任务提交处
+=====
+
 ## 说明
 
 * 将你们完成的项目放到以姓名全拼命名的文件夹里面，命名如：`nihao`。注意：**这里是公共的repo，大家不要修改别人的文件夹或整个项目结构**
@@ -60,3 +62,24 @@ sqlite，listview， android基本布局和控件当然也许尽量掌握，有�
 遇到问题要先自己分析思考，实在不行就google，再不行就要带着自己的解决思路去问，可以参看一下stackoverflow的提问方式，这是作为程序员最基本的素养。
 
 加油！
+
+TASK2:
+===============
+
+##  第二个任务：天气应用
+这次的任务主要是为了熟悉Android网络编程。
+
+接口：[天气查询](http://apistore.baidu.com/apiworks/servicedetail/112.html)
+
+使用上面的接口实现一个查询天气的APP。毕竟没有设计师，这次的界面也不做要求。主要是为了能够从网络中获取数据并显示。
+
+技术需求：
+1.  HTTP请求
+2.  JSON语法格式与解析
+3.  android多线程通信
+
+另外，我后面俩周会放假。这次任务时间也并不是很急，虽然任务的工作量也不大。
+
+建议学习：[markdown](http://wowubuntu.com/markdown)
+
+另外如果对android开发十分感兴趣的话也可以先了解一下gradle。(毕竟gradle是目前android开发的标配)
